@@ -1,0 +1,37 @@
+﻿@{
+    ViewData["Title"] = "Translate";
+}
+
+
+<h1>Dictionary</h1>
+
+<p>Enter an English word or phrase to translate into Hungarian:</p>
+
+<input type="text" id="englishInput">
+<button id="translateButton">Translate</button>
+
+<div id="translationResult"></div>
+
+@section scripts {
+    <script>
+        var translateButton = document.getElementById("translateButton");
+        translateButton.addEventListener("click", function () {
+            var englishInput = document.getElementById("englishInput").value;
+
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status === 200) {
+                    var response = JSON.parse(this.responseText);
+                    if (response.hasOwnProperty("Translation")) {
+                        document.getElementById("translationResult").innerHTML = response.Translation;
+                    } else {
+                        document.getElementById("translationResult").innerHTML = response.Error;
+                    }
+                }
+            };
+            xhr.open("POST", "/Dictionary/Translate?english=" + encodeURIComponent(englishInput));
+            xhr.send();
+        });
+    </script>
+}
+
